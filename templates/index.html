@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks</title>
+    <!-- Link to the external CSS file -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Tasks</h1>
+        <form action="/tasks/add" method="POST" class="task-form">
+            <input type="text" name="content" placeholder="Add new task" required>
+            <button type="submit">Add Task</button>
+        </form>
+
+        <div class="task-list">
+            {% for task in tasks %}
+                <div class="task">
+                    <input type="checkbox" class="toggle-complete" 
+                        {{ 'checked' if task.completed else '' }} 
+                        onchange="toggleCompleted(this, '{{ task.id }}')">
+                    <span class="task-content {{ 'completed' if task.completed else '' }}">{{ task.content }}</span>
+                    <form action="/tasks/delete/{{ task.id }}" method="POST" class="delete-form">
+                        <button type="submit" class="delete-btn">Delete</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function toggleCompleted(checkbox, taskId) {
+            const taskContent = checkbox.closest('.task').querySelector('.task-content');
+            
+            if (checkbox.checked) {
+                taskContent.classList.add('completed');
+            } else {
+                taskContent.classList.remove('completed');
+            }
+
+            // Make a POST request to update the task's completed status
+            fetch(`/tasks/update/${taskId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `completed=${checkbox.checked ? 'true' : 'false'}`
+            });
+        }
+    </script>
+</body>
+</html>
