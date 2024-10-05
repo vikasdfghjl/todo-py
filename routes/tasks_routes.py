@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from database.mongo import get_tasks, add_task, update_task, delete_task
+from datetime import datetime
 
 # Create a Blueprint for tasks
 tasks_bp = Blueprint('tasks', __name__)
@@ -13,7 +14,7 @@ def index():
 def add_task_route():
     task_content = request.form.get('content')
     if task_content:
-        add_task(task_content)  # Add task to the database
+        add_task(task_content, datetime.now())  # Add task to the database
     return redirect(url_for('tasks.index'))
 
 @tasks_bp.route('/update/<task_id>', methods=['POST'])

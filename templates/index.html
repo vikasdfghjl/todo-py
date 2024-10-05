@@ -22,9 +22,13 @@
                         {{ 'checked' if task.completed else '' }} 
                         onchange="toggleCompleted(this, '{{ task.id }}')">
                     <span class="task-content {{ 'completed' if task.completed else '' }}">{{ task.content }}</span>
+                    <div class="task-date">
+                        <small>{{ task.created_at.strftime('%d %b %y') }}</small>
+                    </div>
                     <form action="/tasks/delete/{{ task.id }}" method="POST" class="delete-form">
                         <button type="submit" class="delete-btn">Delete</button>
                     </form>
+                    
                 </div>
             {% endfor %}
         </div>
